@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">Custom Navigation Drawer</string>
+    <string name="navigation_button_description">navigation button</string>
+    <string name="appbar_text">Menu</string>
 </resources>

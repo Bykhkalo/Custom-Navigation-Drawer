@@ -4,8 +4,8 @@ import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Typeface;
 import android.os.Handler;
-import android.support.annotation.IntDef;
-import android.support.v7.widget.CardView;
+import androidx.annotation.IntDef;
+import androidx.cardview.widget.CardView;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -44,11 +44,11 @@ public class SNavigationDrawer extends RelativeLayout{
     //Customization Variables
     private int appbarColor = R.color.White;
     private int appbarTitleTextColor = R.color.Black;
-    private int menuItemSemiTransparentColor = R.color.transparent_black_percent_60;
-    private int navigationDrawerBackgroundColor = R.color.White;
-    private int primaryMenuItemTextColor = R.color.White;
-    private int secondaryMenuItemTextColor = R.color.Black;
-    private int menuIconTintColor = R.color.Black;
+    private int menuItemSemiTransparentColor = getResources().getColor(R.color.transparent_black_percent_60);
+    private int navigationDrawerBackgroundColor = getResources().getColor(R.color.White);
+    private int primaryMenuItemTextColor = getResources().getColor(R.color.White);
+    private int secondaryMenuItemTextColor = getResources().getColor(R.color.Black);
+    private int menuIconTintColor = getResources().getColor(R.color.Black);
     private float menuIconSize = 30;
     private float appbarTitleTextSize = 20;
     private float primaryMenuItemTextSize = 20;
@@ -360,16 +360,15 @@ public class SNavigationDrawer extends RelativeLayout{
 
         setAppbarColor(attrs.getColor(R.styleable.SNavigationDrawer_appbarColor,getResources().getColor(appbarColor)));
         setAppbarTitleTextColor(attrs.getColor(R.styleable.SNavigationDrawer_appbarTitleTextColor,getResources().getColor(appbarTitleTextColor)));
-        setMenuiconTintColor(attrs.getColor(R.styleable.SNavigationDrawer_HamMenuIconTintColor,getResources().getColor(menuIconTintColor)));
-        setMenuItemSemiTransparentColor(attrs.getColor(R.styleable.SNavigationDrawer_HamMenuItemSemiTransparentColor,getResources().getColor(menuItemSemiTransparentColor)));
-        setNavigationDrawerBackgroundColor(attrs.getColor(R.styleable.SNavigationDrawer_navigationDrawerBackgroundColor,getResources().getColor(navigationDrawerBackgroundColor)));
-        setPrimaryMenuItemTextColor(attrs.getColor(R.styleable.SNavigationDrawer_navigationDrawerBackgroundColor,getResources().getColor(primaryMenuItemTextColor)));
-        setSecondaryMenuItemTextColor(attrs.getColor(R.styleable.SNavigationDrawer_secondaryMenuItemTextColor,getResources().getColor(secondaryMenuItemTextColor)));
+        setMenuiconTintColor(attrs.getColor(R.styleable.SNavigationDrawer_HamMenuIconTintColor,menuIconTintColor));
+        setMenuItemSemiTransparentColor(attrs.getColor(R.styleable.SNavigationDrawer_HamMenuItemSemiTransparentColor, menuItemSemiTransparentColor));
+        setNavigationDrawerBackgroundColor(attrs.getColor(R.styleable.SNavigationDrawer_navigationDrawerBackgroundColor, navigationDrawerBackgroundColor));
+        setPrimaryMenuItemTextColor(attrs.getColor(R.styleable.SNavigationDrawer_navigationDrawerBackgroundColor, primaryMenuItemTextColor));
+        setSecondaryMenuItemTextColor(attrs.getColor(R.styleable.SNavigationDrawer_secondaryMenuItemTextColor, secondaryMenuItemTextColor));
         setAppbarTitleTextSize(attrs.getDimension(R.styleable.SNavigationDrawer_appbarTitleTextSize,20));
         setPrimaryMenuItemTextSize(attrs.getDimension(R.styleable.SNavigationDrawer_primaryMenuItemTextSize,20));
         setSecondaryMenuItemTextSize(attrs.getDimension(R.styleable.SNavigationDrawer_secondaryMenuItemTextSize,20));
         setMenuIconSize(attrs.getDimension(R.styleable.SNavigationDrawer_HamMenuIconSize,20));
-
     }
 
     //To change the AppBar Title

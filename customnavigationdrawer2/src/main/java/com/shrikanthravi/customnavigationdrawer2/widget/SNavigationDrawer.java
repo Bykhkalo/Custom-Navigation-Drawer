@@ -208,6 +208,10 @@ public class SNavigationDrawer extends RelativeLayout {
             rootRL.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
+
+                    //fix to avoid handling multiple clicks in one animation
+                    if (!navOpen) return;
+
                     if (currentPos != Integer.parseInt(view.getTag().toString())) {
 
                         final CardView backCV1 = (CardView) menuLL.findViewWithTag("cv" + currentPos);

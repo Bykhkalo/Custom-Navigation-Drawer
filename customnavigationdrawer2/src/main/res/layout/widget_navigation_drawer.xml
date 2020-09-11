@@ -1,16 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<merge xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:id="@+id/rootLayout"
-    android:background="@android:color/white">
+    android:background="@android:color/white"
+    tools:parentTag="android.widget.RelativeLayout"
+    >
     <LinearLayout
         android:baselineAligned="false"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="horizontal"
-        android:weightSum="2">
+        android:weightSum="2"
+        >
         <ScrollView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -45,6 +49,7 @@
         app:cardBackgroundColor="#fcfcfc"
         android:focusable="true">
         <LinearLayout
+            android:id="@+id/appBarParent"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical">
@@ -60,17 +65,21 @@
                 android:id="@+id/menuIV"
                 android:contentDescription="@string/navigation_button_description"
                 android:src="@drawable/asl_pathmorph_drawer"
-                android:layout_margin="4dp"/>
+                android:layout_margin="4dp"
+                android:layout_centerVertical="true"
+                />
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerHorizontal="true"
-                android:textStyle="bold"
                 android:layout_centerVertical="true"
+                android:textStyle="bold"
                 android:id="@+id/appBarTitleTV"
                 android:layout_marginLeft="30dp"
                 android:layout_marginRight="30dp"
                 android:layout_gravity="center"
+                android:maxLines="1"
+                android:ellipsize="end"
                 android:gravity="center"
                 android:text="@string/appbar_text"/>
         </RelativeLayout>
@@ -84,4 +93,4 @@
         </LinearLayout>
 
     </androidx.cardview.widget.CardView>
-</RelativeLayout>
+</merge>

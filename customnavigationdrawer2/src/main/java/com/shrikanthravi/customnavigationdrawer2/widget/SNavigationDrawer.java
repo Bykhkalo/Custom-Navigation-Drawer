@@ -1,13 +1,19 @@
 package com.shrikanthravi.customnavigationdrawer2.widget;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Typeface;
 import android.os.Handler;
+
 import androidx.annotation.IntDef;
 import androidx.cardview.widget.CardView;
+import androidx.core.content.ContextCompat;
+
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -24,7 +30,7 @@ import java.lang.annotation.RetentionPolicy;
 import java.util.ArrayList;
 import java.util.List;
 
-public class SNavigationDrawer extends RelativeLayout{
+public class SNavigationDrawer extends RelativeLayout {
 
 
     //Context
@@ -33,7 +39,8 @@ public class SNavigationDrawer extends RelativeLayout{
 
     //Layouts
     protected List<MenuItem> menuItemList;
-    protected RelativeLayout rootLayout,appbarRL;
+    protected RelativeLayout rootLayout;
+    protected RelativeLayout appbarRL;
     protected CardView containerCV;
     protected TextView appbarTitleTV;
     protected ImageView menuIV;
@@ -55,12 +62,14 @@ public class SNavigationDrawer extends RelativeLayout{
     private float secondaryMenuItemTextSize = 20;
 
     //Other stuff
-    private boolean navOpen=false;
-    private int currentPos=0;
-    float centerX,centerY;
+    private boolean navOpen = false;
+    private int currentPos = 0;
+    float centerX, centerY;
+
     @IntDef({STATE_OPEN, STATE_CLOSED, STATE_OPENING, STATE_CLOSING})
     @Retention(RetentionPolicy.SOURCE)
-    private @interface State {}
+    private @interface State {
+    }
 
     //Indicates that any drawer is open. No animation is in progress.
     public static final int STATE_OPEN = 0;
@@ -100,7 +109,7 @@ public class SNavigationDrawer extends RelativeLayout{
     //Adding the child views inside CardView LinearLayout
     @Override
     public void addView(View child, int index, ViewGroup.LayoutParams params) {
-        if(containerLL == null){
+        if (containerLL == null) {
             super.addView(child, index, params);
         } else {
             //Forward these calls to the content view
@@ -109,12 +118,13 @@ public class SNavigationDrawer extends RelativeLayout{
     }
 
     //Initialization
-    public void init(Context context){
+    @SuppressLint("ClickableViewAccessibility")
+    public void init(Context context) {
         mContext = context;
         mLayoutInflater = LayoutInflater.from(context);
         //Load RootView from xml
-        View rootView = mLayoutInflater.inflate(R.layout.widget_navigation_drawer, this, true);
-        rootLayout = rootView.findViewById(R.id.rootLayout);
+        View rootView = mLayoutInflater.inflate(R.layout.widget_navigation_drawer, this);
+        rootLayout = (RelativeLayout) rootView;
         appbarRL = rootView.findViewById(R.id.appBarRL);
         containerCV = rootView.findViewById(R.id.containerCV);
         appbarTitleTV = rootView.findViewById(R.id.appBarTitleTV);
@@ -126,25 +136,54 @@ public class SNavigationDrawer extends RelativeLayout{
         menuItemList = new ArrayList<>();
 
 
-
         menuIV.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 hamMenuClicked();
-                if(navOpen){
+                if (navOpen) {
                     closeDrawer();
-                }
-                else {
+                } else {
                     openDrawer();
                 }
             }
         });
 
+
+        //Adding swipe event handling
+        containerLL.setOnTouchListener(new OnTouchListener() {
+
+            int downX, upX;
+
+            @Override
+            public boolean onTouch(View view, MotionEvent event) {
+
+                if (event.getAction() == MotionEvent.ACTION_DOWN) {
+                    downX = (int) event.getX();
+                    Log.d("tag", " downX " + downX);
+                    return true;
+                } else if (event.getAction() == MotionEvent.ACTION_UP) {
+                    upX = (int) event.getX();
+                    Log.d("tag", " upX " + upX);
+                    if (upX - downX > 100) {
+                        if (!navOpen)
+                            openDrawer();
+                    } else if (downX - upX > -100) {
+                        if (navOpen)
+                            closeDrawer();
+                        // swipe left
+                    }
+                    return true;
+
+                }
+                return false;
+            }
+        });
+
     }
 
-    protected void initMenu(){
-        for(int i=0;i<menuItemList.size();i++){
-            View view = LayoutInflater.from(getContext()).inflate(R.layout.menu_row_item,null);
+    protected void initMenu() {
+        for (int i = 0; i < menuItemList.size(); i++) {
+            View view = LayoutInflater.from(getContext()).inflate(R.layout.menu_row_item, null);
 
             TextView titleTV = view.findViewById(R.id.titleTV);
             TextView titleTV1 = view.findViewById(R.id.titleTV1);
@@ -157,35 +196,35 @@ public class SNavigationDrawer extends RelativeLayout{
             titleTV.setTextSize(secondaryMenuItemTextSize);
             titleTV1.setTextSize(primaryMenuItemTextSize);
             final RelativeLayout rootRL = view.findViewById(R.id.rootRL);
-            backgroundCV.setTag("cv"+i);
-            System.out.println("Testing "+backgroundCV.getTag());
-            titleTV.setTag("tv"+i);
-            if(i>=1){
+            backgroundCV.setTag("cv" + i);
+            System.out.println("Testing " + backgroundCV.getTag());
+            titleTV.setTag("tv" + i);
+            if (i >= 1) {
                 backgroundCV.setVisibility(View.GONE);
-                backgroundCV.animate().translationX(rootRL.getX()-backgroundCV.getWidth()).setDuration(1).start();
+                backgroundCV.animate().translationX(rootRL.getX() - backgroundCV.getWidth()).setDuration(1).start();
                 titleTV.setVisibility(View.VISIBLE);
             }
             rootRL.setTag(i);
             rootRL.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    if(currentPos!=Integer.valueOf(view.getTag().toString())){
+                    if (currentPos != Integer.parseInt(view.getTag().toString())) {
 
-                        final CardView backCV1 = (CardView) menuLL.findViewWithTag("cv"+currentPos);
-                        final TextView title1 = (TextView) menuLL.findViewWithTag("tv"+currentPos);
+                        final CardView backCV1 = (CardView) menuLL.findViewWithTag("cv" + currentPos);
+                        final TextView title1 = (TextView) menuLL.findViewWithTag("tv" + currentPos);
 
-                        backCV1.animate().translationX(rootRL.getX()-backCV1.getWidth()).setDuration(300).start();
+                        backCV1.animate().translationX(rootRL.getX() - backCV1.getWidth()).setDuration(300).start();
 
-                        currentPos=Integer.valueOf(view.getTag().toString());
+                        currentPos = Integer.parseInt(view.getTag().toString());
                         menuItemClicked(currentPos);
 
                         appbarTitleTV.setText(menuItemList.get(currentPos).getTitle());
 
-                        final CardView backCV = (CardView) menuLL.findViewWithTag("cv"+currentPos);
-                        final TextView title = (TextView) menuLL.findViewWithTag("tv"+currentPos);
+                        final CardView backCV = (CardView) menuLL.findViewWithTag("cv" + currentPos);
+                        final TextView title = (TextView) menuLL.findViewWithTag("tv" + currentPos);
                         backCV.setVisibility(View.INVISIBLE);
-                        System.out.println("Drawer Testing "+backCV.getTag());
-                        backCV.animate().translationX(rootRL.getX()-backCV.getWidth()).setDuration(1).start();
+                        System.out.println("Drawer Testing " + backCV.getTag());
+                        backCV.animate().translationX(rootRL.getX() - backCV.getWidth()).setDuration(1).start();
                         backCV.animate().translationX(rootRL.getX()).setDuration(300).start();
                         backCV.setVisibility(View.VISIBLE);
                         title.setVisibility(View.GONE);
@@ -198,17 +237,16 @@ public class SNavigationDrawer extends RelativeLayout{
                                 backCV1.setVisibility(View.GONE);
                                 title1.setVisibility(View.VISIBLE);
                             }
-                        },300);
+                        }, 300);
                         //Close Navigation Drawer
-                       closeDrawer();
-                    }
-                    else{
+                        closeDrawer();
+                    } else {
                         menuItemClicked(currentPos);
                         closeDrawer();
                     }
                 }
             });
-            backgroundIV.setImageDrawable(getContext().getDrawable(menuItemList.get(i).getImageId()));
+            backgroundIV.setImageDrawable(ContextCompat.getDrawable(getContext(), menuItemList.get(i).getImageId()));
             titleTV.setText(menuItemList.get(i).getTitle());
             titleTV1.setText(menuItemList.get(i).getTitle());
             menuLL.addView(view);
@@ -216,14 +254,14 @@ public class SNavigationDrawer extends RelativeLayout{
     }
 
     //Hamburger button Click Listener
-    public interface OnHamMenuClickListener{
+    public interface OnHamMenuClickListener {
 
         public void onHamMenuClicked();
 
     }
 
     //Listener for menu item click
-    public interface OnMenuItemClickListener{
+    public interface OnMenuItemClickListener {
 
         public void onMenuItemClicked(int position);
 
@@ -273,54 +311,54 @@ public class SNavigationDrawer extends RelativeLayout{
         this.drawerListener = drawerListener;
     }
 
-    protected void hamMenuClicked(){
-        if(onHamMenuClickListener!=null){
+    protected void hamMenuClicked() {
+        if (onHamMenuClickListener != null) {
             onHamMenuClickListener.onHamMenuClicked();
         }
     }
 
-    protected void menuItemClicked(int position){
-        if(onMenuItemClickListener!=null){
+    protected void menuItemClicked(int position) {
+        if (onMenuItemClickListener != null) {
             onMenuItemClickListener.onMenuItemClicked(position);
 
         }
     }
 
-    protected void drawerOpened(){
-        if(drawerListener!=null){
+    protected void drawerOpened() {
+        if (drawerListener != null) {
             drawerListener.onDrawerOpened();
             drawerListener.onDrawerStateChanged(STATE_OPEN);
         }
     }
 
-    protected void drawerClosed(){
+    protected void drawerClosed() {
         System.out.println("Drawer Closing");
-        if(drawerListener!=null){
+        if (drawerListener != null) {
             drawerListener.onDrawerClosed();
             drawerListener.onDrawerStateChanged(STATE_CLOSED);
         }
     }
 
-    protected void drawerOpening(){
-        if(drawerListener!=null){
+    protected void drawerOpening() {
+        if (drawerListener != null) {
             drawerListener.onDrawerOpening();
             drawerListener.onDrawerStateChanged(STATE_OPENING);
         }
     }
 
-    protected void drawerClosing(){
-        if(drawerListener!=null){
+    protected void drawerClosing() {
+        if (drawerListener != null) {
             drawerListener.onDrawerClosing();
             drawerListener.onDrawerStateChanged(STATE_CLOSING);
         }
     }
 
     //Closes drawer
-    public void closeDrawer(){
+    public void closeDrawer() {
         drawerClosing();
-        navOpen=false;
+        navOpen = false;
         final int[] stateSet = {android.R.attr.state_checked * (navOpen ? 1 : -1)};
-        menuIV.setImageState(stateSet,true);
+        menuIV.setImageState(stateSet, true);
         appbarTitleTV.animate().translationX(centerX).start();
         containerCV.animate().translationX(rootLayout.getX()).translationY(rootLayout.getY()).setDuration(500).start();
         final Handler handler = new Handler();
@@ -329,50 +367,65 @@ public class SNavigationDrawer extends RelativeLayout{
             public void run() {
 
                 drawerClosed();
+
+                if (navOpen) {
+                   /* This is fix for appbar radius changing.
+                      The issue comes when user swipes very fast in different directions */
+                    containerCV.setCardElevation((float) 100.0);
+                    containerCV.setRadius((float) 60.0);
+                    return;
+                }
+
                 containerCV.setCardElevation((float) 0);
-                containerCV.setRadius((float)0);
+                containerCV.setRadius((float) 0);
+
             }
-        },500);
+        }, 500);
     }
 
     //Opens Drawer
-    public void openDrawer(){
+    public void openDrawer() {
 
         drawerOpening();
-        navOpen=true;
+        navOpen = true;
         final int[] stateSet = {android.R.attr.state_checked * (navOpen ? 1 : -1)};
-        menuIV.setImageState(stateSet,true);
+        menuIV.setImageState(stateSet, true);
         containerCV.setCardElevation((float) 100.0);
-        containerCV.setRadius((float)60.0);
-        appbarTitleTV.animate().translationX(centerX+menuIV.getWidth()+menuIV.getWidth()/4+appbarTitleTV.getWidth()/2-appbarRL.getWidth()/2).start();
-        containerCV.animate().translationX(rootLayout.getX() +(rootLayout.getWidth() / 8)+ (rootLayout.getWidth() / 2) ).translationY(250).setDuration(500).start();
+        containerCV.setRadius((float) 60.0);
+        appbarTitleTV.animate().translationX(centerX + menuIV.getWidth() + menuIV.getWidth() / 4 + appbarTitleTV.getWidth() / 2 - appbarRL.getWidth() / 2).start();
+        containerCV.animate().translationX(rootLayout.getX() + (rootLayout.getWidth() / 8) + (rootLayout.getWidth() / 2)).translationY(250).setDuration(500).start();
         final Handler handler = new Handler();
         handler.postDelayed(new Runnable() {
             @Override
             public void run() {
                 drawerOpened();
+
             }
-        },250);
+        }, 250);
     }
 
     //set Attributes from xml
-    protected void setAttributes(TypedArray attrs){
+    protected void setAttributes(TypedArray attrs) {
 
-        setAppbarColor(attrs.getColor(R.styleable.SNavigationDrawer_appbarColor,getResources().getColor(appbarColor)));
-        setAppbarTitleTextColor(attrs.getColor(R.styleable.SNavigationDrawer_appbarTitleTextColor,getResources().getColor(appbarTitleTextColor)));
-        setMenuiconTintColor(attrs.getColor(R.styleable.SNavigationDrawer_HamMenuIconTintColor,menuIconTintColor));
+        setAppbarColor(attrs.getColor(R.styleable.SNavigationDrawer_appbarColor, getResources().getColor(appbarColor)));
+        setAppbarTitleTextColor(attrs.getColor(R.styleable.SNavigationDrawer_appbarTitleTextColor, getResources().getColor(appbarTitleTextColor)));
+        setMenuiconTintColor(attrs.getColor(R.styleable.SNavigationDrawer_HamMenuIconTintColor, menuIconTintColor));
         setMenuItemSemiTransparentColor(attrs.getColor(R.styleable.SNavigationDrawer_HamMenuItemSemiTransparentColor, menuItemSemiTransparentColor));
         setNavigationDrawerBackgroundColor(attrs.getColor(R.styleable.SNavigationDrawer_navigationDrawerBackgroundColor, navigationDrawerBackgroundColor));
         setPrimaryMenuItemTextColor(attrs.getColor(R.styleable.SNavigationDrawer_navigationDrawerBackgroundColor, primaryMenuItemTextColor));
         setSecondaryMenuItemTextColor(attrs.getColor(R.styleable.SNavigationDrawer_secondaryMenuItemTextColor, secondaryMenuItemTextColor));
-        setAppbarTitleTextSize(attrs.getDimension(R.styleable.SNavigationDrawer_appbarTitleTextSize,20));
-        setPrimaryMenuItemTextSize(attrs.getDimension(R.styleable.SNavigationDrawer_primaryMenuItemTextSize,20));
-        setSecondaryMenuItemTextSize(attrs.getDimension(R.styleable.SNavigationDrawer_secondaryMenuItemTextSize,20));
-        setMenuIconSize(attrs.getDimension(R.styleable.SNavigationDrawer_HamMenuIconSize,20));
+        setAppbarTitleTextSize(attrs.getDimension(R.styleable.SNavigationDrawer_appbarTitleTextSize, 20));
+        setPrimaryMenuItemTextSize(attrs.getDimension(R.styleable.SNavigationDrawer_primaryMenuItemTextSize, 20));
+        setSecondaryMenuItemTextSize(attrs.getDimension(R.styleable.SNavigationDrawer_secondaryMenuItemTextSize, 20));
+        setMenuIconSize(attrs.getDimension(R.styleable.SNavigationDrawer_HamMenuIconSize, 20));
+
+
+        appbarRL.getLayoutParams().height = (int) attrs.getDimension(R.styleable.SNavigationDrawer_appbarHeight, LayoutParams.WRAP_CONTENT);
+
     }
 
     //To change the AppBar Title
-    public void setAppbarTitleTV(String name){
+    public void setAppbarTitleTV(String name) {
         appbarTitleTV.setText(name);
     }
 
@@ -382,8 +435,8 @@ public class SNavigationDrawer extends RelativeLayout{
     }
 
     //Adding menu to drawer
-    public void addMenuItem(MenuItem menuItem){
-        if(menuItemList!=null){
+    public void addMenuItem(MenuItem menuItem) {
+        if (menuItemList != null) {
             menuItemList.add(menuItem);
         }
     }
@@ -505,7 +558,7 @@ public class SNavigationDrawer extends RelativeLayout{
     }
 
     //to change the typeface of appbar title
-    public void setAppbarTitleTypeface(Typeface titleTypeface){
+    public void setAppbarTitleTypeface(Typeface titleTypeface) {
         appbarTitleTV.setTypeface(titleTypeface);
     }
 }

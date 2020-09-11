@@ -15,6 +15,5 @@
         android:textSize="20sp"
         android:textColor="@android:color/white"
         android:textStyle="bold"
-        android:text="News Fragment" />
-w
+        android:text="@string/news_fragment" />
 </FrameLayout>

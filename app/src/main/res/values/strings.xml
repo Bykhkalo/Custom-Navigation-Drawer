@@ -1,6 +1,10 @@
 <resources>
     <string name="app_name">Custom Navigation Drawer</string>
 
-    <!-- TODO: Remove or change this placeholder text -->
+
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="feed_fragment">Feed</string>
+    <string name="messages_fragment">Messages Fragment</string>
+    <string name="music_fragment">Music Fragment</string>
+    <string name="news_fragment">News Fragment</string>
 </resources>

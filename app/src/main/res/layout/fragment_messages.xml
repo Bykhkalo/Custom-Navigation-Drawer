@@ -15,6 +15,6 @@
         android:textColor="@android:color/white"
         android:textSize="20sp"
         android:textStyle="bold"
-        android:text="Messages Fragment" />
+        android:text="@string/messages_fragment" />
 
 </FrameLayout>

@@ -1,10 +1,11 @@
 package com.shrikanthravi.customnavigationdrawer2.widget;
 
+import android.animation.ObjectAnimator;
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.graphics.Typeface;
-import android.os.Handler;
 
 import androidx.annotation.IntDef;
 import androidx.cardview.widget.CardView;
@@ -48,6 +49,15 @@ public class SNavigationDrawer extends RelativeLayout {
     protected LinearLayout menuLL;
     protected LinearLayout containerLL;
 
+
+
+    //Defaults
+    private static final int DEFAULT_ANIMATION_DURATION = 500;
+    private static final int DEFAULT_TEXT_SIZE = 20;
+    private static final int DEFAULT_MENU_ICON_SIZE = 20;
+    private static final int DEFAULT_RADIUS = 60;
+    private static final float DEFAULT_DRAWER_ANIM_DISTANCE = 0.625f;
+
     //Customization Variables
     private int appbarColor = R.color.White;
     private int appbarTitleTextColor = R.color.Black;
@@ -56,10 +66,17 @@ public class SNavigationDrawer extends RelativeLayout {
     private int primaryMenuItemTextColor = getResources().getColor(R.color.White);
     private int secondaryMenuItemTextColor = getResources().getColor(R.color.Black);
     private int menuIconTintColor = getResources().getColor(R.color.Black);
-    private float menuIconSize = 30;
-    private float appbarTitleTextSize = 20;
-    private float primaryMenuItemTextSize = 20;
-    private float secondaryMenuItemTextSize = 20;
+    private float menuIconSize = DEFAULT_MENU_ICON_SIZE;
+    private float appbarTitleTextSize = DEFAULT_TEXT_SIZE;
+    private float primaryMenuItemTextSize = DEFAULT_TEXT_SIZE;
+    private float secondaryMenuItemTextSize = DEFAULT_TEXT_SIZE;
+
+    private int appbarHeight = LayoutParams.WRAP_CONTENT;
+    private int openCloseAnimDuration = DEFAULT_ANIMATION_DURATION;
+    private int radius = DEFAULT_RADIUS;
+    private int menuAnimDuration = DEFAULT_ANIMATION_DURATION;
+    private float drawerAnimDistance = DEFAULT_DRAWER_ANIM_DISTANCE;
+
 
     //Other stuff
     private boolean navOpen = false;
@@ -159,11 +176,11 @@ public class SNavigationDrawer extends RelativeLayout {
 
                 if (event.getAction() == MotionEvent.ACTION_DOWN) {
                     downX = (int) event.getX();
-                    Log.d("tag", " downX " + downX);
+                    //Log.d("tag", " downX " + downX);
                     return true;
                 } else if (event.getAction() == MotionEvent.ACTION_UP) {
                     upX = (int) event.getX();
-                    Log.d("tag", " upX " + upX);
+                    //Log.d("tag", " upX " + upX);
                     if (upX - downX > 100) {
                         if (!navOpen)
                             openDrawer();
@@ -199,11 +216,7 @@ public class SNavigationDrawer extends RelativeLayout {
             backgroundCV.setTag("cv" + i);
             System.out.println("Testing " + backgroundCV.getTag());
             titleTV.setTag("tv" + i);
-            if (i >= 1) {
-                backgroundCV.setVisibility(View.GONE);
-                backgroundCV.animate().translationX(rootRL.getX() - backgroundCV.getWidth()).setDuration(1).start();
-                titleTV.setVisibility(View.VISIBLE);
-            }
+
             rootRL.setTag(i);
             rootRL.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -213,35 +226,44 @@ public class SNavigationDrawer extends RelativeLayout {
                     if (!navOpen) return;
 
                     if (currentPos != Integer.parseInt(view.getTag().toString())) {
-
                         final CardView backCV1 = (CardView) menuLL.findViewWithTag("cv" + currentPos);
                         final TextView title1 = (TextView) menuLL.findViewWithTag("tv" + currentPos);
 
-                        backCV1.animate().translationX(rootRL.getX() - backCV1.getWidth()).setDuration(300).start();
+                        //Log.d("tag", "onClick: rootRL X: " + rootRL.getX() + " backCV1 Width: " + backCV1.getWidth());
+                        backCV1.animate().translationX(rootRL.getX() - backCV1.getWidth()).setDuration(menuAnimDuration).start();
 
                         currentPos = Integer.parseInt(view.getTag().toString());
                         menuItemClicked(currentPos);
+
 
                         appbarTitleTV.setText(menuItemList.get(currentPos).getTitle());
 
                         final CardView backCV = (CardView) menuLL.findViewWithTag("cv" + currentPos);
                         final TextView title = (TextView) menuLL.findViewWithTag("tv" + currentPos);
-                        backCV.setVisibility(View.INVISIBLE);
-                        System.out.println("Drawer Testing " + backCV.getTag());
-                        backCV.animate().translationX(rootRL.getX() - backCV.getWidth()).setDuration(1).start();
-                        backCV.animate().translationX(rootRL.getX()).setDuration(300).start();
+                        backCV.setVisibility(View.VISIBLE);
+                        // Log.d("tag", "onClick: Drawer Testing: " + backCV.getTag());
+                        Log.d("tag", "anim: visibility:" + backCV.getVisibility());
+
+                        Log.d("tag", "firstAnim: rootRL.getX(): " + rootRL.getX() + " backCV.getWidth(): " + backCV.getWidth());
+                        //backCV.animate().translationX(rootRL.getX() - backCV.getWidth()).setDuration(1300).start();
+
+                        Log.d("tag", "secondAnim: rootRL.getX(): " + rootRL.getX() + " backCV.getWidth(): " + backCV.getWidth());
+                        backCV.animate().translationX(rootRL.getX()).setDuration(menuAnimDuration)
+                                .withEndAction(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        title1.setVisibility(VISIBLE);
+                                        backCV1.setVisibility(GONE);
+                                    }
+                                })
+                                .start();
+
                         backCV.setVisibility(View.VISIBLE);
                         title.setVisibility(View.GONE);
 
-                        final Handler handler1 = new Handler();
-                        handler1.postDelayed(new Runnable() {
-                            @Override
-                            public void run() {
 
-                                backCV1.setVisibility(View.GONE);
-                                title1.setVisibility(View.VISIBLE);
-                            }
-                        }, 300);
+
+
                         //Close Navigation Drawer
                         closeDrawer();
                     } else {
@@ -254,6 +276,27 @@ public class SNavigationDrawer extends RelativeLayout {
             titleTV.setText(menuItemList.get(i).getTitle());
             titleTV1.setText(menuItemList.get(i).getTitle());
             menuLL.addView(view);
+
+            if (i >= 1) {
+                //Cleaning items of their backgroundCVs
+                backgroundCV.setVisibility(View.GONE);
+                Log.d("tag", "INITIAL: rootRL.getX(): " + rootRL.getX() + " backgroundCV.getWidth(): " + backgroundCV.getWidth());
+                //backgroundCV.animate().translationX(rootRL.getX() - backgroundCV.getWidth()).setDuration(1).start();
+
+
+                /*This is an approximate calculation of the default backCV1 width
+                  I cant get it from backCV1.getWidth() because it always return 0.
+                  It will return real width after measuring.*/
+                float point = Resources.getSystem().getDisplayMetrics().widthPixels * 0.6f;
+
+                Log.d("tag", "initMenu: width: " + Resources.getSystem().getDisplayMetrics().widthPixels + " X: " + point);
+
+                final CardView backCV1 = (CardView) menuLL.findViewWithTag("cv" + i);
+                backCV1.animate().translationX(rootRL.getX() - point).setDuration(1).start();
+
+
+               titleTV.setVisibility(View.VISIBLE);
+            }
         }
     }
 
@@ -357,34 +400,48 @@ public class SNavigationDrawer extends RelativeLayout {
         }
     }
 
+    private void animateClosing(int duration) {
+        appbarTitleTV.animate().translationX(centerX).setDuration(duration).start();
+        containerCV.animate().translationX(rootLayout.getX()).translationY(rootLayout.getY()).setDuration(duration).start();
+
+        ObjectAnimator
+                .ofFloat(containerCV, "radius", containerCV.getRadius(), 1)
+                .setDuration(duration)
+                .start();
+
+
+        ObjectAnimator
+                .ofFloat(containerCV, "elevation", containerCV.getCardElevation(), 0)
+                .setDuration(duration)
+                .start();
+
+    }
+
+    private void animateOpening(int duration) {
+
+        ObjectAnimator
+                .ofFloat(containerCV, "radius", containerCV.getRadius(), radius)
+                .setDuration(duration)
+                .start();
+
+
+        ObjectAnimator
+                .ofFloat(containerCV, "elevation", containerCV.getCardElevation(), 100)
+                .setDuration(duration)
+                .start();
+
+        appbarTitleTV.animate().translationX(centerX + menuIV.getWidth() + menuIV.getWidth() / 4 + appbarTitleTV.getWidth() / 2 - appbarRL.getWidth() / 2).setDuration(openCloseAnimDuration).start();
+        containerCV.animate().translationX(rootLayout.getX() + rootLayout.getWidth() * drawerAnimDistance).translationY(250).setDuration(openCloseAnimDuration).start();
+
+    }
+
     //Closes drawer
     public void closeDrawer() {
         drawerClosing();
         navOpen = false;
         final int[] stateSet = {android.R.attr.state_checked * (navOpen ? 1 : -1)};
         menuIV.setImageState(stateSet, true);
-        appbarTitleTV.animate().translationX(centerX).start();
-        containerCV.animate().translationX(rootLayout.getX()).translationY(rootLayout.getY()).setDuration(500).start();
-        final Handler handler = new Handler();
-        handler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-
-                drawerClosed();
-
-                if (navOpen) {
-                   /* This is fix for appbar radius changing.
-                      The issue comes when user swipes very fast in different directions */
-                    containerCV.setCardElevation((float) 100.0);
-                    containerCV.setRadius((float) 60.0);
-                    return;
-                }
-
-                containerCV.setCardElevation((float) 0);
-                containerCV.setRadius((float) 0);
-
-            }
-        }, 500);
+        animateClosing(openCloseAnimDuration);
     }
 
     //Opens Drawer
@@ -394,18 +451,8 @@ public class SNavigationDrawer extends RelativeLayout {
         navOpen = true;
         final int[] stateSet = {android.R.attr.state_checked * (navOpen ? 1 : -1)};
         menuIV.setImageState(stateSet, true);
-        containerCV.setCardElevation((float) 100.0);
-        containerCV.setRadius((float) 60.0);
-        appbarTitleTV.animate().translationX(centerX + menuIV.getWidth() + menuIV.getWidth() / 4 + appbarTitleTV.getWidth() / 2 - appbarRL.getWidth() / 2).start();
-        containerCV.animate().translationX(rootLayout.getX() + (rootLayout.getWidth() / 8) + (rootLayout.getWidth() / 2)).translationY(250).setDuration(500).start();
-        final Handler handler = new Handler();
-        handler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                drawerOpened();
-
-            }
-        }, 250);
+        animateOpening(openCloseAnimDuration);
+        drawerOpened();
     }
 
     //set Attributes from xml
@@ -418,15 +465,20 @@ public class SNavigationDrawer extends RelativeLayout {
         setNavigationDrawerBackgroundColor(attrs.getColor(R.styleable.SNavigationDrawer_navigationDrawerBackgroundColor, navigationDrawerBackgroundColor));
         setPrimaryMenuItemTextColor(attrs.getColor(R.styleable.SNavigationDrawer_navigationDrawerBackgroundColor, primaryMenuItemTextColor));
         setSecondaryMenuItemTextColor(attrs.getColor(R.styleable.SNavigationDrawer_secondaryMenuItemTextColor, secondaryMenuItemTextColor));
-        setAppbarTitleTextSize(attrs.getDimension(R.styleable.SNavigationDrawer_appbarTitleTextSize, 20));
-        setPrimaryMenuItemTextSize(attrs.getDimension(R.styleable.SNavigationDrawer_primaryMenuItemTextSize, 20));
-        setSecondaryMenuItemTextSize(attrs.getDimension(R.styleable.SNavigationDrawer_secondaryMenuItemTextSize, 20));
-        setMenuIconSize(attrs.getDimension(R.styleable.SNavigationDrawer_HamMenuIconSize, 20));
+        setAppbarTitleTextSize(attrs.getDimension(R.styleable.SNavigationDrawer_appbarTitleTextSize, DEFAULT_TEXT_SIZE));
+        setPrimaryMenuItemTextSize(attrs.getDimension(R.styleable.SNavigationDrawer_primaryMenuItemTextSize, DEFAULT_TEXT_SIZE));
+        setSecondaryMenuItemTextSize(attrs.getDimension(R.styleable.SNavigationDrawer_secondaryMenuItemTextSize, DEFAULT_TEXT_SIZE));
+        setMenuIconSize(attrs.getDimension(R.styleable.SNavigationDrawer_HamMenuIconSize, DEFAULT_MENU_ICON_SIZE));
 
+        drawerAnimDistance = attrs.getFraction(R.styleable.SNavigationDrawer_drawerAnimDistance, 1, 1, DEFAULT_DRAWER_ANIM_DISTANCE);
+        radius = (int) attrs.getDimension(R.styleable.SNavigationDrawer_radius, DEFAULT_RADIUS);
+        openCloseAnimDuration = attrs.getInteger(R.styleable.SNavigationDrawer_openCloseAnimationDuration, DEFAULT_ANIMATION_DURATION);
+        menuAnimDuration = attrs.getInteger(R.styleable.SNavigationDrawer_menuAnimationDuration, DEFAULT_ANIMATION_DURATION);
 
         appbarRL.getLayoutParams().height = (int) attrs.getDimension(R.styleable.SNavigationDrawer_appbarHeight, LayoutParams.WRAP_CONTENT);
 
     }
+
 
     //To change the AppBar Title
     public void setAppbarTitleTV(String name) {
@@ -461,6 +513,50 @@ public class SNavigationDrawer extends RelativeLayout {
      * Customization :)
      *
      */
+
+
+    public int getMenuAnimDuration() {
+        return menuAnimDuration;
+    }
+
+    public void setMenuAnimDuration(int menuAnimDuration) {
+        this.menuAnimDuration = menuAnimDuration;
+    }
+
+    public float getDrawerAnimDistance() {
+        return drawerAnimDistance;
+    }
+
+    public void setDrawerAnimDistance(float drawerAnimDistance) {
+        this.drawerAnimDistance = drawerAnimDistance;
+    }
+
+    public int getOpenCloseAnimDuration() {
+        return openCloseAnimDuration;
+    }
+
+    public void setOpenCloseAnimDuration(int openCloseAnimDuration) {
+        this.openCloseAnimDuration = openCloseAnimDuration;
+    }
+
+    public int getAppbarHeight() {
+        return appbarHeight;
+    }
+
+    public void setAppbarHeight(int appbarHeight) {
+        this.appbarHeight = appbarHeight;
+    }
+
+
+
+    public int getRadius() {
+        return radius;
+    }
+
+    public void setRadius(int radius) {
+        this.radius = radius;
+    }
+
     public int getAppbarColor() {
         return appbarColor;
     }

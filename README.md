@@ -34,7 +34,7 @@ Still in Active Development.
 	```gradle
   dependencies {
  
- 		  //this is the basic build dependancy from lib author
+ 		  //this is the basic build dependancy from author's lib
 	          implementation 'com.github.shrikanth7698:Custom-Navigation-Drawer:v0.0.1'
 		
 		  //this is the latest version with my changes

@@ -11,7 +11,13 @@
         android:id="@+id/navigationDrawer"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:elevation="0dp"
+
+        app:appbarHeight="?android:actionBarSize"
+        app:navigationDrawerBackgroundColor="@android:color/holo_orange_light"
+        app:openCloseAnimationDuration="300"
+        app:menuAnimationDuration="150"
+        app:radius="24dp"
+        app:drawerAnimDistance="62.5%"
         >
 
         <FrameLayout

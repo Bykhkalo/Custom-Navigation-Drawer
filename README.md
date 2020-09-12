@@ -14,7 +14,7 @@ Still in Active Development.
 [![Android Arsenal]( https://img.shields.io/badge/Android%20Arsenal-Custom%20Navigation%20Drawer-green.svg?style=flat )]( https://android-arsenal.com/details/1/6876 )
   
   ### Version
-[![](https://jitpack.io/v/shrikanth7698/Custom-Navigation-Drawer.svg)](https://jitpack.io/#shrikanth7698/Custom-Navigation-Drawer)
+[![](https://jitpack.io/v/Bykhkalo/Custom-Navigation-Drawer.svg)](https://jitpack.io/#Bykhkalo/Custom-Navigation-Drawer/v0.0.2)
 
 ### Installation
 
@@ -30,10 +30,15 @@ Still in Active Development.
 	}
 	```
 
-	Add the dependency in your app build.gradle
+	Add the dependency in your app build.gradle. Choose one.
 	```gradle
   dependencies {
-	        compile 'com.github.shrikanth7698:Custom-Navigation-Drawer:v0.0.1'
+ 
+ 		  //this is the basic build dependancy from lib author
+	          implementation 'com.github.shrikanth7698:Custom-Navigation-Drawer:v0.0.1'
+		
+		  //this is the latest version with my changes
+		  implementation 'com.github.Bykhkalo:Custom-Navigation-Drawer:v0.0.2'
 	}
 	```
 
@@ -199,6 +204,13 @@ And then in your Activity or fragment
         app:appbarTitleTextSize="7sp"
         app:primaryMenuItemTextSize="7sp"
         app:secondaryMenuItemTextSize="7sp"
+	
+	app:appbarHeight="?android:actionBarSize"
+	app:openCloseAnimationDuration="300"								
+	app:menuAnimationDuration="150"
+	app:radius="24dp"
+	app:drawerAnimDistance="62.5%"
+				
         android:id="@+id/navigationDrawer">
         <FrameLayout
             android:id="@+id/frameLayout"
@@ -213,6 +225,8 @@ And then in your Activity or fragment
 ### Developed by
 <div class="LI-profile-badge"  data-version="v1" data-size="medium" data-locale="en_US" data-type="horizontal" data-theme="light" data-vanity="shrikanthravi"><a class="LI-simple-link" href='https://in.linkedin.com/in/shrikanthravi?trk=profile-badge'>Shrikanth Ravi</a></div>
 
+### Forked by
+<div class="LI-profile-badge"  data-version="v1" data-size="medium" data-locale="en_US" data-type="horizontal" data-theme="light" data-vanity="bykhkalo"><a class="LI-simple-link" href='https://github.com/Bykhkalo'>Bykhkalo</a></div>
   
 ### License
 ```

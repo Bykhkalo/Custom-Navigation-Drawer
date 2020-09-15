@@ -14,7 +14,7 @@ Still in Active Development.
 [![Android Arsenal]( https://img.shields.io/badge/Android%20Arsenal-Custom%20Navigation%20Drawer-green.svg?style=flat )]( https://android-arsenal.com/details/1/6876 )
   
   ### Version
-[![](https://jitpack.io/v/Bykhkalo/Custom-Navigation-Drawer.svg)](https://jitpack.io/#Bykhkalo/Custom-Navigation-Drawer/v0.0.2)
+[![](https://jitpack.io/v/Bykhkalo/Custom-Navigation-Drawer.svg)](https://jitpack.io/#Bykhkalo/Custom-Navigation-Drawer)
 
 ### Installation
 
@@ -38,7 +38,7 @@ Still in Active Development.
 	          implementation 'com.github.shrikanth7698:Custom-Navigation-Drawer:v0.0.1'
 		
 		  //this is the latest version with my changes
-		  implementation 'com.github.Bykhkalo:Custom-Navigation-Drawer:v0.0.2'
+		  implementation 'com.github.Bykhkalo:Custom-Navigation-Drawer:v0.0.3'
 	}
 	```
 

@@ -21,6 +21,7 @@
         <attr name="openCloseAnimationDuration" format="integer"/>
         <attr name="menuAnimationDuration" format="integer"/>
         <attr name="drawerAnimDistance" format="fraction"/>
+        <attr name="enableSwipeListener" format="boolean"/>
     </declare-styleable>
 
 

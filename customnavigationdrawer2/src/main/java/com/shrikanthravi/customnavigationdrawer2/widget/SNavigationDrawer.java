@@ -8,14 +8,17 @@ import android.content.res.TypedArray;
 import android.graphics.Typeface;
 
 import androidx.annotation.IntDef;
+import androidx.annotation.Nullable;
 import androidx.cardview.widget.CardView;
 import androidx.core.content.ContextCompat;
+import androidx.core.view.MotionEventCompat;
 
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewConfiguration;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -47,7 +50,7 @@ public class SNavigationDrawer extends RelativeLayout {
     protected ImageView menuIV;
     protected ScrollView menuSV;
     protected LinearLayout menuLL;
-    protected LinearLayout containerLL;
+    protected MyLinearLayout containerLL;
 
 
 
@@ -123,6 +126,8 @@ public class SNavigationDrawer extends RelativeLayout {
 
     }
 
+    int downX, upX;
+
     //Adding the child views inside CardView LinearLayout
     @Override
     public void addView(View child, int index, ViewGroup.LayoutParams params) {
@@ -164,7 +169,6 @@ public class SNavigationDrawer extends RelativeLayout {
                 }
             }
         });
-
 
         //Adding swipe event handling
         containerLL.setOnTouchListener(new OnTouchListener() {
@@ -660,5 +664,53 @@ public class SNavigationDrawer extends RelativeLayout {
     //to change the typeface of appbar title
     public void setAppbarTitleTypeface(Typeface titleTypeface) {
         appbarTitleTV.setTypeface(titleTypeface);
+    }
+
+    public static class MyLinearLayout extends LinearLayout {
+        private int mTouchSlop;
+        boolean  mIsScrolling;
+        private int lastX;
+
+
+        ViewConfiguration vc = ViewConfiguration.get(this.getContext());
+
+        public MyLinearLayout(Context context) {
+            super(context);
+            mTouchSlop = vc.getScaledTouchSlop();
+        }
+
+        public MyLinearLayout(Context context, @Nullable AttributeSet attrs) {
+            super(context, attrs);
+            mTouchSlop = vc.getScaledTouchSlop();
+        }
+
+        @Override
+        public boolean onInterceptTouchEvent(MotionEvent ev) {
+            int action = ev.getAction();
+
+            switch (action){
+                case MotionEvent.ACTION_DOWN:
+                    lastX = (int) ev.getX();
+                    Log.d("tag", "onInterceptTouchEvent: DOWN");
+                    return false;
+
+                case MotionEvent.ACTION_MOVE:
+                    if (calculateDistanceX(ev) > 100)
+                    {
+                        Log.d("tag", "onInterceptTouchEvent: Move");
+                        return true;
+                    }
+
+                default: return false;
+            }
+
+        }
+
+        private int calculateDistanceX(MotionEvent ev) {
+           int distance =  (int)  (lastX - ev.getX());
+
+           return distance;
+        }
+
     }
 }

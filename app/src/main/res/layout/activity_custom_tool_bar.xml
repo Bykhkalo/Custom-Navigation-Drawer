@@ -40,6 +40,8 @@
                 android:layout_height="32dp"
                 android:layout_gravity="center_vertical"
                 android:layout_margin="8dp"
+                android:clickable="true"
+                android:focusable="true"
                 android:src="@drawable/asl_pathmorph_drawer"
                 android:contentDescription="@string/navigation_button_description" />
 

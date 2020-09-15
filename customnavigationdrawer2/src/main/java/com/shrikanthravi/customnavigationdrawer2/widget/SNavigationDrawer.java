@@ -161,12 +161,7 @@ public class SNavigationDrawer extends RelativeLayout {
         menuIV.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                hamMenuClicked();
-                if (navOpen) {
-                    closeDrawer();
-                } else {
-                    openDrawer();
-                }
+                onNavButtonClickListener();
             }
         });
 
@@ -202,6 +197,15 @@ public class SNavigationDrawer extends RelativeLayout {
             }
         });
 
+    }
+
+    public void onNavButtonClickListener(){
+        hamMenuClicked();
+        if (navOpen) {
+            closeDrawer();
+        } else {
+            openDrawer();
+        }
     }
 
     protected void initMenu() throws Exception {

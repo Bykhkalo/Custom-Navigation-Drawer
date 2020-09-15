@@ -43,6 +43,12 @@ public class CustomToolBarActivity extends AppCompatActivity {
 
     private void initToolbar() {
         navImageView = findViewById(R.id.nav_image_view);
+        navImageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                sNavigationDrawer.onNavButtonClickListener();
+            }
+        });
 
         toolbar = findViewById(R.id.main_app_bar);
         this.setSupportActionBar(toolbar);

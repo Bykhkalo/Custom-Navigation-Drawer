@@ -90,7 +90,6 @@ public class Main2Activity extends AppCompatActivity {
 
                     @Override
                     public void onDrawerClosing() {
-                        Log.d("tag", "onDrawerClosing: ");
 
                         try {
                             fragment = (Fragment) fragmentClass.newInstance();
@@ -116,7 +115,6 @@ public class Main2Activity extends AppCompatActivity {
 
                     @Override
                     public void onDrawerStateChanged(int newState) {
-                        Log.d("tag", "onDrawerStateChanged: " + newState);
 
                     }
                 });

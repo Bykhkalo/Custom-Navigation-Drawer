@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/bar_search"
+        android:title="@string/search_title"
+        android:icon="@drawable/ic_baseline_search_24"
+        app:showAsAction="always"
+        app:actionViewClass="android.widget.SearchView"
+        />
+
+    <item
+        android:id="@+id/bar_edit_filter"
+        android:title="Edit"
+        android:icon="@drawable/vd_pathmorph_drawer_arrow"
+        app:showAsAction="ifRoom"/>
+</menu>

@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context=".Main2Activity">
+
+    <com.shrikanthravi.customnavigationdrawer2.widget.SNavigationDrawer
+        android:id="@+id/navigationDrawer"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+
+        app:appbarHeight="?android:actionBarSize"
+        app:navigationDrawerBackgroundColor="@android:color/holo_orange_light"
+        app:openCloseAnimationDuration="300"
+        app:menuAnimationDuration="150"
+        app:radius="24dp"
+        app:drawerAnimDistance="62.5%"
+        app:enableSwipeListener="true"
+        app:useDefaultToolbar="false"
+        >
+
+        <LinearLayout
+            android:id="@+id/toolbar_ll"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:background="@android:color/holo_blue_light"
+
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            >
+
+            <ImageView
+                android:id="@+id/nav_image_view"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:layout_gravity="center_vertical"
+                android:layout_margin="8dp"
+                android:src="@drawable/asl_pathmorph_drawer"
+                android:contentDescription="@string/navigation_button_description" />
+
+
+            <com.google.android.material.appbar.MaterialToolbar
+                android:id="@+id/main_app_bar"
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"
+                app:titleTextColor="@android:color/white"
+                app:title="@string/app_name" />
+        </LinearLayout>
+
+
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btn_go_next_activity"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+
+            android:padding="16dp"
+
+            android:layout_marginHorizontal="8dp"
+
+            android:textAllCaps="false"
+            android:text="@string/go_to_main_activity_label"
+            android:onClick="onGoButtonClick"
+
+            android:layout_alignParentStart="true"
+            android:layout_alignParentEnd="true"
+            android:layout_alignTop="@id/toolbar_ll"
+            />
+
+        <FrameLayout
+            android:id="@+id/frameLayout"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+
+            android:layout_alignTop="@id/btn_go_next_activity"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentEnd="true"
+            />
+
+
+    </com.shrikanthravi.customnavigationdrawer2.widget.SNavigationDrawer>
+</LinearLayout>

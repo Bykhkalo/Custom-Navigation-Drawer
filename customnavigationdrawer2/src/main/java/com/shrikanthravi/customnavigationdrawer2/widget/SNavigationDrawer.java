@@ -17,7 +17,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.ViewConfiguration;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -59,6 +58,7 @@ public class SNavigationDrawer extends RelativeLayout {
     private static final int DEFAULT_RADIUS = 60;
     private static final float DEFAULT_DRAWER_ANIM_DISTANCE = 0.625f;
     private static final boolean DEFAULT_SWIPE_ENABLED = true;
+    private static final boolean DEFAULT_TOOLBAR_USE = true;
 
     //Customization Variables
     private int appbarColor = R.color.White;
@@ -78,6 +78,7 @@ public class SNavigationDrawer extends RelativeLayout {
     private int radius = DEFAULT_RADIUS;
     private int menuAnimDuration = DEFAULT_ANIMATION_DURATION;
     private float drawerAnimDistance = DEFAULT_DRAWER_ANIM_DISTANCE;
+    private boolean isUseDefaultToolbar = DEFAULT_TOOLBAR_USE;
 
 
     //Other stuff
@@ -203,7 +204,12 @@ public class SNavigationDrawer extends RelativeLayout {
 
     }
 
-    protected void initMenu() {
+    protected void initMenu() throws Exception {
+
+        if (menuItemList.size() > 0)
+            appbarTitleTV.setText(menuItemList.get(0).getTitle());
+        else throw new Exception("menuItemList is Empty. Please init SNavigationDrawer with not empty menuItemList");
+
         for (int i = 0; i < menuItemList.size(); i++) {
             View view = LayoutInflater.from(getContext()).inflate(R.layout.menu_row_item, null);
 
@@ -473,11 +479,13 @@ public class SNavigationDrawer extends RelativeLayout {
         setSecondaryMenuItemTextSize(attrs.getDimension(R.styleable.SNavigationDrawer_secondaryMenuItemTextSize, DEFAULT_TEXT_SIZE));
         setMenuIconSize(attrs.getDimension(R.styleable.SNavigationDrawer_HamMenuIconSize, DEFAULT_MENU_ICON_SIZE));
 
+
         setAppbarHeight((int) attrs.getDimension(R.styleable.SNavigationDrawer_appbarHeight, LayoutParams.WRAP_CONTENT));
         setDrawerAnimDistance(attrs.getFraction(R.styleable.SNavigationDrawer_drawerAnimDistance, 1, 1, DEFAULT_DRAWER_ANIM_DISTANCE));
         setRadius((int) attrs.getDimension(R.styleable.SNavigationDrawer_radius, DEFAULT_RADIUS));
         setOpenCloseAnimDuration(attrs.getInteger(R.styleable.SNavigationDrawer_openCloseAnimationDuration, DEFAULT_ANIMATION_DURATION));
         setSwipeEnabled(attrs.getBoolean(R.styleable.SNavigationDrawer_enableSwipeListener, DEFAULT_SWIPE_ENABLED));
+        setUseDefaultToolbar(attrs.getBoolean(R.styleable.SNavigationDrawer_useDefaultToolbar, DEFAULT_TOOLBAR_USE));
 
     }
 
@@ -505,7 +513,7 @@ public class SNavigationDrawer extends RelativeLayout {
     }
 
     //Setting the list of Menu Items
-    public void setMenuItemList(List<MenuItem> menuItemList) {
+    public void setMenuItemList(List<MenuItem> menuItemList) throws Exception {
         this.menuItemList = menuItemList;
         initMenu();
     }
@@ -515,6 +523,18 @@ public class SNavigationDrawer extends RelativeLayout {
      * Customization :)
      *
      */
+
+    public boolean isUseDefaultToolbar() {
+        return isUseDefaultToolbar;
+    }
+
+    public void setUseDefaultToolbar(boolean useDefaultToolbar) {
+        isUseDefaultToolbar = useDefaultToolbar;
+
+        int visibility = isUseDefaultToolbar ? VISIBLE : GONE;
+
+        appbarRL.setVisibility(visibility);
+    }
 
     public boolean isSwipeEnabled() {
         return containerLL.isSwipeEnabled;

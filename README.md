@@ -38,7 +38,7 @@ Still in Active Development.
 	          implementation 'com.github.shrikanth7698:Custom-Navigation-Drawer:v0.0.1'
 		
 		  //this is the latest version with my changes
-		  implementation 'com.github.Bykhkalo:Custom-Navigation-Drawer:v0.0.3'
+		  implementation 'com.github.Bykhkalo:Custom-Navigation-Drawer:v0.0.5'
 	}
 	```
 

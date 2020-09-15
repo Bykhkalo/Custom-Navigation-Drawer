@@ -83,13 +83,13 @@
                 android:gravity="center"
                 android:text="@string/appbar_text"/>
         </RelativeLayout>
-            <LinearLayout
+            <view class="com.shrikanthravi.customnavigationdrawer2.widget.SNavigationDrawer$SLinearLayout"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:id="@+id/containerLL"
                 android:orientation="vertical">
 
-            </LinearLayout>
+            </view>
         </LinearLayout>
 
     </androidx.cardview.widget.CardView>

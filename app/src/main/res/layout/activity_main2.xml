@@ -18,6 +18,7 @@
         app:menuAnimationDuration="150"
         app:radius="24dp"
         app:drawerAnimDistance="62.5%"
+        app:enableSwipeListener="true"
         >
 
         <FrameLayout

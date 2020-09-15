@@ -8,6 +8,7 @@ import android.content.res.TypedArray;
 import android.graphics.Typeface;
 
 import androidx.annotation.IntDef;
+import androidx.annotation.Nullable;
 import androidx.cardview.widget.CardView;
 import androidx.core.content.ContextCompat;
 
@@ -16,6 +17,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewConfiguration;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -47,8 +49,7 @@ public class SNavigationDrawer extends RelativeLayout {
     protected ImageView menuIV;
     protected ScrollView menuSV;
     protected LinearLayout menuLL;
-    protected LinearLayout containerLL;
-
+    protected SLinearLayout containerLL;
 
 
     //Defaults
@@ -57,6 +58,7 @@ public class SNavigationDrawer extends RelativeLayout {
     private static final int DEFAULT_MENU_ICON_SIZE = 20;
     private static final int DEFAULT_RADIUS = 60;
     private static final float DEFAULT_DRAWER_ANIM_DISTANCE = 0.625f;
+    private static final boolean DEFAULT_SWIPE_ENABLED = true;
 
     //Customization Variables
     private int appbarColor = R.color.White;
@@ -123,6 +125,8 @@ public class SNavigationDrawer extends RelativeLayout {
 
     }
 
+    int downX, upX;
+
     //Adding the child views inside CardView LinearLayout
     @Override
     public void addView(View child, int index, ViewGroup.LayoutParams params) {
@@ -165,7 +169,6 @@ public class SNavigationDrawer extends RelativeLayout {
             }
         });
 
-
         //Adding swipe event handling
         containerLL.setOnTouchListener(new OnTouchListener() {
 
@@ -173,26 +176,28 @@ public class SNavigationDrawer extends RelativeLayout {
 
             @Override
             public boolean onTouch(View view, MotionEvent event) {
+                if (!containerLL.isSwipeEnabled) return false;
 
-                if (event.getAction() == MotionEvent.ACTION_DOWN) {
-                    downX = (int) event.getX();
-                    //Log.d("tag", " downX " + downX);
-                    return true;
-                } else if (event.getAction() == MotionEvent.ACTION_UP) {
-                    upX = (int) event.getX();
-                    //Log.d("tag", " upX " + upX);
-                    if (upX - downX > 100) {
-                        if (!navOpen)
-                            openDrawer();
-                    } else if (downX - upX > -100) {
-                        if (navOpen)
-                            closeDrawer();
-                        // swipe left
+                if (event.getAction() == MotionEvent.ACTION_MOVE) {
+
+                    switch (containerLL.checkSwipeDirection(event)) {
+
+                        case SLinearLayout.SWIPE_LEFT:
+                            if (navOpen)
+                                closeDrawer();
+                            break;
+                        case SLinearLayout.SWIPE_RIGHT:
+                            if (!navOpen)
+                                openDrawer();
+                            break;
+                        default:
+                            break;
+
                     }
-                    return true;
-
                 }
-                return false;
+
+                return true;
+
             }
         });
 
@@ -262,8 +267,6 @@ public class SNavigationDrawer extends RelativeLayout {
                         title.setVisibility(View.GONE);
 
 
-
-
                         //Close Navigation Drawer
                         closeDrawer();
                     } else {
@@ -295,7 +298,7 @@ public class SNavigationDrawer extends RelativeLayout {
                 backCV1.animate().translationX(rootRL.getX() - point).setDuration(1).start();
 
 
-               titleTV.setVisibility(View.VISIBLE);
+                titleTV.setVisibility(View.VISIBLE);
             }
         }
     }
@@ -470,12 +473,11 @@ public class SNavigationDrawer extends RelativeLayout {
         setSecondaryMenuItemTextSize(attrs.getDimension(R.styleable.SNavigationDrawer_secondaryMenuItemTextSize, DEFAULT_TEXT_SIZE));
         setMenuIconSize(attrs.getDimension(R.styleable.SNavigationDrawer_HamMenuIconSize, DEFAULT_MENU_ICON_SIZE));
 
-        drawerAnimDistance = attrs.getFraction(R.styleable.SNavigationDrawer_drawerAnimDistance, 1, 1, DEFAULT_DRAWER_ANIM_DISTANCE);
-        radius = (int) attrs.getDimension(R.styleable.SNavigationDrawer_radius, DEFAULT_RADIUS);
-        openCloseAnimDuration = attrs.getInteger(R.styleable.SNavigationDrawer_openCloseAnimationDuration, DEFAULT_ANIMATION_DURATION);
-        menuAnimDuration = attrs.getInteger(R.styleable.SNavigationDrawer_menuAnimationDuration, DEFAULT_ANIMATION_DURATION);
-
-        appbarRL.getLayoutParams().height = (int) attrs.getDimension(R.styleable.SNavigationDrawer_appbarHeight, LayoutParams.WRAP_CONTENT);
+        setAppbarHeight((int) attrs.getDimension(R.styleable.SNavigationDrawer_appbarHeight, LayoutParams.WRAP_CONTENT));
+        setDrawerAnimDistance(attrs.getFraction(R.styleable.SNavigationDrawer_drawerAnimDistance, 1, 1, DEFAULT_DRAWER_ANIM_DISTANCE));
+        setRadius((int) attrs.getDimension(R.styleable.SNavigationDrawer_radius, DEFAULT_RADIUS));
+        setOpenCloseAnimDuration(attrs.getInteger(R.styleable.SNavigationDrawer_openCloseAnimationDuration, DEFAULT_ANIMATION_DURATION));
+        setSwipeEnabled(attrs.getBoolean(R.styleable.SNavigationDrawer_enableSwipeListener, DEFAULT_SWIPE_ENABLED));
 
     }
 
@@ -514,6 +516,13 @@ public class SNavigationDrawer extends RelativeLayout {
      *
      */
 
+    public boolean isSwipeEnabled() {
+        return containerLL.isSwipeEnabled;
+    }
+
+    public void setSwipeEnabled(boolean swipeEnabled) {
+        containerLL.isSwipeEnabled = swipeEnabled;
+    }
 
     public int getMenuAnimDuration() {
         return menuAnimDuration;
@@ -529,6 +538,7 @@ public class SNavigationDrawer extends RelativeLayout {
 
     public void setDrawerAnimDistance(float drawerAnimDistance) {
         this.drawerAnimDistance = drawerAnimDistance;
+
     }
 
     public int getOpenCloseAnimDuration() {
@@ -545,8 +555,8 @@ public class SNavigationDrawer extends RelativeLayout {
 
     public void setAppbarHeight(int appbarHeight) {
         this.appbarHeight = appbarHeight;
+        appbarRL.getLayoutParams().height = appbarHeight;
     }
-
 
 
     public int getRadius() {
@@ -660,5 +670,61 @@ public class SNavigationDrawer extends RelativeLayout {
     //to change the typeface of appbar title
     public void setAppbarTitleTypeface(Typeface titleTypeface) {
         appbarTitleTV.setTypeface(titleTypeface);
+    }
+
+    public static class SLinearLayout extends LinearLayout {
+        private int lastDownX;
+        private boolean isSwipeEnabled = true;
+
+        public static final int SWIPE_NONE = 0;
+        public static final int SWIPE_LEFT = 1;
+        public static final int SWIPE_RIGHT = 2;
+
+
+        public SLinearLayout(Context context) {
+            super(context);
+        }
+
+        public SLinearLayout(Context context, @Nullable AttributeSet attrs) {
+            super(context, attrs);
+        }
+
+        @Override
+        public boolean onInterceptTouchEvent(MotionEvent ev) {
+            if (!isSwipeEnabled) return false;
+
+            int action = ev.getAction();
+
+            switch (action) {
+                case MotionEvent.ACTION_DOWN:
+                    lastDownX = (int) ev.getX();
+                    return false;
+
+                case MotionEvent.ACTION_MOVE:
+                    //returns true when swipe occurred
+                    return calculateDistanceX(ev) > 100;
+
+
+                default:
+                    return false;
+            }
+
+        }
+
+
+        private int calculateDistanceX(MotionEvent ev) {
+            return Math.abs((int) (lastDownX - ev.getX()));
+        }
+
+        public int checkSwipeDirection(MotionEvent ev) {
+            int distance = (int) (lastDownX - ev.getX());
+
+            if (distance < -100) return SWIPE_RIGHT;
+            if (distance > 100) return SWIPE_LEFT;
+
+            return SWIPE_NONE;
+
+        }
+
     }
 }

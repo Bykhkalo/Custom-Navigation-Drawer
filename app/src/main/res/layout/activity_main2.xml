@@ -21,10 +21,31 @@
         app:enableSwipeListener="true"
         >
 
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btn_go_next_activity"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+
+            android:padding="16dp"
+            android:layout_marginHorizontal="8dp"
+
+            android:textAllCaps="false"
+            android:text="@string/go_to_customtoolbaractivity_label"
+            android:onClick="onGoButtonClick"
+
+            android:layout_alignParentStart="true"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentTop="true"
+            />
+
         <FrameLayout
             android:id="@+id/frameLayout"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:layout_alignTop="@id/btn_go_next_activity"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentEnd="true"
             />
 
 

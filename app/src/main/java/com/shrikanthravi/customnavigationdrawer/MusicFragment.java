@@ -20,10 +20,10 @@ import static android.R.layout.simple_list_item_1;
 public class MusicFragment extends Fragment {
 
     // определяем строковый массив
-    final String[] catNames = new String[] {
-            "Рыжик", "Барсик", "Мурзик", "Мурка", "Васька",
-            "Томасина", "Кристина", "Пушок", "Дымка", "Кузя",
-            "Китти", "Масяня", "Симба"
+    final String[] songNames = new String[] {
+            "Dreamy Lands", "Sweet Legend", "Feel Good With Your Season", "Make Less Tense Sea", "The Time Has Come Again For Night",
+            "Buenos Aires Desert", "Right Crash", "Going Chocolate", "End Of Dinner Time", "Bridge Of My Explosions",
+            "Gratifying Together", "Calming Time", "Hidden Rainy Day"
     };
 
     public MusicFragment() {
@@ -55,7 +55,7 @@ public class MusicFragment extends Fragment {
 
 // используем адаптер данных
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(getContext(),
-                simple_list_item_1, catNames);
+                simple_list_item_1, songNames);
 
 
 

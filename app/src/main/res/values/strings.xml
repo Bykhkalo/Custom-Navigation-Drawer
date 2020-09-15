@@ -7,4 +7,7 @@
     <string name="messages_fragment">Messages Fragment</string>
     <string name="music_fragment">Music Fragment</string>
     <string name="news_fragment">News Fragment</string>
+    <string name="go_to_customtoolbaractivity_label">Go to CustomToolBarActivity</string>
+    <string name="go_to_main_activity_label">Go to MainActivity</string>
+    <string name="search_title">search</string>
 </resources>

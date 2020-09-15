@@ -4,9 +4,12 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
+import android.view.View;
 
+import com.google.android.material.appbar.MaterialToolbar;
+import com.google.android.material.button.MaterialButton;
 import com.shrikanthravi.customnavigationdrawer2.data.MenuItem;
 import com.shrikanthravi.customnavigationdrawer2.widget.SNavigationDrawer;
 
@@ -24,17 +27,26 @@ public class Main2Activity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main2);
-        if (getSupportActionBar() != null) {
-            getSupportActionBar().hide();
-        }
 
+        //Set up SNavigationDrawer
+        initNavigation();
+
+    }
+
+
+    private void initNavigation() {
         sNavigationDrawer = findViewById(R.id.navigationDrawer);
         List<MenuItem> menuItems = new ArrayList<>();
-        menuItems.add(new MenuItem("News",R.drawable.news_bg));
-        menuItems.add(new MenuItem("Feed",R.drawable.feed_bg));
-        menuItems.add(new MenuItem("Messages",R.drawable.message_bg));
-        menuItems.add(new MenuItem("Music",R.drawable.music_bg));
-        sNavigationDrawer.setMenuItemList(menuItems);
+        menuItems.add(new MenuItem("News", R.drawable.news_bg));
+        menuItems.add(new MenuItem("Feed", R.drawable.feed_bg));
+        menuItems.add(new MenuItem("Messages", R.drawable.message_bg));
+        menuItems.add(new MenuItem("Music", R.drawable.music_bg));
+
+        try {
+            sNavigationDrawer.setMenuItemList(menuItems);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         fragmentClass = NewsFragment.class;
 
         try {
@@ -120,6 +132,10 @@ public class Main2Activity extends AppCompatActivity {
                 });
             }
         });
+    }
 
+    public void onGoButtonClick(View view) {
+        startActivity(new Intent(Main2Activity.this, CustomToolBarActivity.class));
+        finish();
     }
 }

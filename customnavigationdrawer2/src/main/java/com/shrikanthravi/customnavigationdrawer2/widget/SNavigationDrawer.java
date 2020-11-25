@@ -72,6 +72,8 @@ public class SNavigationDrawer extends RelativeLayout {
     private float appbarTitleTextSize = DEFAULT_TEXT_SIZE;
     private float primaryMenuItemTextSize = DEFAULT_TEXT_SIZE;
     private float secondaryMenuItemTextSize = DEFAULT_TEXT_SIZE;
+    private int menuItemWidth;
+
 
     private int appbarHeight = LayoutParams.WRAP_CONTENT;
     private int openCloseAnimDuration = DEFAULT_ANIMATION_DURATION;
@@ -490,6 +492,7 @@ public class SNavigationDrawer extends RelativeLayout {
         setOpenCloseAnimDuration(attrs.getInteger(R.styleable.SNavigationDrawer_openCloseAnimationDuration, DEFAULT_ANIMATION_DURATION));
         setSwipeEnabled(attrs.getBoolean(R.styleable.SNavigationDrawer_enableSwipeListener, DEFAULT_SWIPE_ENABLED));
         setUseDefaultToolbar(attrs.getBoolean(R.styleable.SNavigationDrawer_useDefaultToolbar, DEFAULT_TOOLBAR_USE));
+        setMenuItemWidth((int) attrs.getDimension(R.styleable.SNavigationDrawer_itemWidth, ViewGroup.LayoutParams.MATCH_PARENT));
 
     }
 
@@ -527,6 +530,11 @@ public class SNavigationDrawer extends RelativeLayout {
      * Customization :)
      *
      */
+
+    public void setMenuItemWidth(int menuItemWidth){
+        this.menuItemWidth = menuItemWidth;
+        menuSV.getLayoutParams().width = menuItemWidth;
+    }
 
     public boolean isUseDefaultToolbar() {
         return isUseDefaultToolbar;

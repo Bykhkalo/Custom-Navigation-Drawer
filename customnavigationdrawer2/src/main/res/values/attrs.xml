@@ -17,6 +17,7 @@
         <attr name="secondaryMenuItemTextSize" format="dimension"/>
 
         <attr name="appbarHeight" format="dimension"/>
+        <attr name="itemWidth" format="dimension"/>
         <attr name="radius" format="dimension"/>
         <attr name="openCloseAnimationDuration" format="integer"/>
         <attr name="menuAnimationDuration" format="integer"/>

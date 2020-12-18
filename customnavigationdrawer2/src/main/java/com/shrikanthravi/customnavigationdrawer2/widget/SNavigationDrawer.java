@@ -478,7 +478,7 @@ public class SNavigationDrawer extends RelativeLayout {
         setMenuiconTintColor(attrs.getColor(R.styleable.SNavigationDrawer_HamMenuIconTintColor, menuIconTintColor));
         setMenuItemSemiTransparentColor(attrs.getColor(R.styleable.SNavigationDrawer_HamMenuItemSemiTransparentColor, menuItemSemiTransparentColor));
         setNavigationDrawerBackgroundColor(attrs.getColor(R.styleable.SNavigationDrawer_navigationDrawerBackgroundColor, navigationDrawerBackgroundColor));
-        setPrimaryMenuItemTextColor(attrs.getColor(R.styleable.SNavigationDrawer_navigationDrawerBackgroundColor, primaryMenuItemTextColor));
+        setPrimaryMenuItemTextColor(attrs.getColor(R.styleable.SNavigationDrawer_primaryMenuItemTextColor, primaryMenuItemTextColor));
         setSecondaryMenuItemTextColor(attrs.getColor(R.styleable.SNavigationDrawer_secondaryMenuItemTextColor, secondaryMenuItemTextColor));
         setAppbarTitleTextSize(attrs.getDimension(R.styleable.SNavigationDrawer_appbarTitleTextSize, DEFAULT_TEXT_SIZE));
         setPrimaryMenuItemTextSize(attrs.getDimension(R.styleable.SNavigationDrawer_primaryMenuItemTextSize, DEFAULT_TEXT_SIZE));

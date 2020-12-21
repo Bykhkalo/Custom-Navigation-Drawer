@@ -292,7 +292,7 @@ public class SNavigationDrawer extends RelativeLayout {
             titleTV1.setText(menuItemList.get(i).getTitle());
             menuLL.addView(view);
 
-            if (i >= 1) {
+            if (i != currentPos) {
                 //Cleaning items of their backgroundCVs
                 backgroundCV.setVisibility(View.GONE);
                 Log.d("tag", "INITIAL: rootRL.getX(): " + rootRL.getX() + " backgroundCV.getWidth(): " + backgroundCV.getWidth());
@@ -522,6 +522,13 @@ public class SNavigationDrawer extends RelativeLayout {
     //Setting the list of Menu Items
     public void setMenuItemList(List<MenuItem> menuItemList) throws Exception {
         this.menuItemList = menuItemList;
+
+
+        if (currentPos < 0 || currentPos > menuItemList.size() -1){
+            this.currentPos = 0;
+
+        }
+
         initMenu();
     }
 
@@ -702,6 +709,14 @@ public class SNavigationDrawer extends RelativeLayout {
     //to change the typeface of appbar title
     public void setAppbarTitleTypeface(Typeface titleTypeface) {
         appbarTitleTV.setTypeface(titleTypeface);
+    }
+
+    public int getCurrentPos() {
+        return currentPos;
+    }
+
+    public void setCurrentPos(int currentPos) {
+        this.currentPos = currentPos;
     }
 
     public static class SLinearLayout extends LinearLayout {

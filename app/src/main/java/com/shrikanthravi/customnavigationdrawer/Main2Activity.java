@@ -42,6 +42,10 @@ public class Main2Activity extends AppCompatActivity {
         menuItems.add(new MenuItem("Messages", R.drawable.message_bg));
         menuItems.add(new MenuItem("Music", R.drawable.music_bg));
 
+        //Set which item should be selected
+        //This method must be called before  setMenuItemList(menuItems)
+        sNavigationDrawer.setCurrentPos(2);
+
         try {
             sNavigationDrawer.setMenuItemList(menuItems);
         } catch (Exception e) {
